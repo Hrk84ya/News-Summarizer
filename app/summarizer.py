@@ -8,16 +8,7 @@ from app.config import DEFAULT_SENTENCE_COUNT
 
 
 def summarize(text: str, sentence_count: int = DEFAULT_SENTENCE_COUNT) -> str:
-    """
-    Summarize text using TextRank extractive summarization.
-
-    Args:
-        text: The article text to summarize.
-        sentence_count: Number of sentences in the summary (3-5).
-
-    Returns:
-        The extractive summary as a string.
-    """
+    """Summarize text using TextRank extractive summarization."""
     if not text or not text.strip():
         return ""
 

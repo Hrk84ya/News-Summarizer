@@ -1,18 +1,15 @@
 """FastAPI news summarizer application."""
 
-import logging
 import nltk
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import RSS_FEEDS, MIN_SENTENCES, MAX_SENTENCES, DEFAULT_SENTENCE_COUNT
 from app.fetcher import fetch_feed, fetch_article_text, fetch_all_feeds
 from app.summarizer import summarize
 from app.models import SummarizeRequest, SummaryResponse, ArticleListResponse
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -26,6 +23,14 @@ app = FastAPI(
     description="Extractive news summarization using TextRank with automatic RSS fetching",
     version="2.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -70,6 +75,8 @@ async def get_summarized_news(
     for article in articles:
         text = await fetch_article_text(article["link"])
         if not text:
+            text = article.get("description", "")
+        if not text:
             continue
         summary = summarize(text, sentence_count)
         if summary:
@@ -95,6 +102,8 @@ async def get_all_news(
 
     for article in articles:
         text = await fetch_article_text(article["link"])
+        if not text:
+            text = article.get("description", "")
         if not text:
             continue
         summary = summarize(text, sentence_count)
