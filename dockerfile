@@ -1,17 +1,15 @@
-# Use official Python image from the Docker Hub
-FROM python:3.8-slim
+FROM python:3.12-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements.txt into the container (if you have one, otherwise we can install directly)
-COPY requirements.txt ./
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install the required Python libraries
-RUN pip install --no-cache-dir transformers torch
+# Download NLTK data at build time
+RUN python -c "import nltk; nltk.download('punkt_tab', quiet=True)"
 
-# Copy the application code into the container
-COPY . /app
+COPY . .
 
-# Set the entrypoint to run the Python script when the container starts
-CMD ["python", "summarizer.py"]
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
