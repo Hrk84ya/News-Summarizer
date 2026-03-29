@@ -7,6 +7,8 @@ RSS_FEEDS = {
     "npr": "https://feeds.npr.org/1001/rss.xml",
     "guardian": "https://www.theguardian.com/world/rss",
     "nytimes": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "ndtv": "https://feeds.feedburner.com/ndtvnews-top-stories",
+    "toi": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
 }
 
 DEFAULT_SENTENCE_COUNT = 4
